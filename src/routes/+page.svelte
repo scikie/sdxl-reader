@@ -185,7 +185,7 @@ HTML 模板部分
 	- 这是经典的居中布局方案
 	*/
 	.container {
-		max-width: 800px;
+		max-width: 560px;
 		margin: 0 auto;
 		padding: 2rem; /* 内边距，留出内容与边框的间距 */
 	}
