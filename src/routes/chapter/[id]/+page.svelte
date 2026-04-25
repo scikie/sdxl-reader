@@ -21,6 +21,7 @@
 	 * - 用户阅读时可随时切换主题
 	 */
 	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
+	import { onMount } from 'svelte';
 
 	/**
 	 * 【知识点】$props() 接收数据
@@ -29,6 +30,26 @@
 	 * - 包含章节内容和导航信息
 	 */
 	let { data } = $props();
+
+	/**
+	 * 【知识点】响应式状态
+	 * - $state() 创建响应式变量
+	 * - showBackButton 控制悬浮按钮显示
+	 */
+	let showBackButton = $state(false);
+
+	/**
+	 * 【知识点】滚动事件处理
+	 * - onMount 中添加滚动监听
+	 * - 滚动超过 300px 显示悬浮按钮
+	 */
+	onMount(() => {
+		const handleScroll = () => {
+			showBackButton = window.scrollY > 300;
+		};
+		window.addEventListener('scroll', handleScroll);
+		return () => window.removeEventListener('scroll', handleScroll);
+	});
 </script>
 
 <!--
@@ -168,6 +189,12 @@
 		{/if}
 	</nav>
 </div>
+
+{#if showBackButton}
+	<a href="/" class="floating-back" title="返回目录">
+		<span class="icon">☰</span>
+	</a>
+{/if}
 
 <style>
 	/*
@@ -340,5 +367,42 @@
 	.nav-link:hover {
 		background: var(--color-primary);
 		color: var(--color-bg); /* 使用背景色，形成对比 */
+	}
+
+	/*
+	============================================================
+	悬浮返回按钮
+	============================================================
+	
+	【知识点】固定定位
+	- position: fixed 相对于视窗定位
+	- 滚动时保持在屏幕固定位置
+	*/
+	.floating-back {
+		position: fixed;
+		bottom: 2rem;
+		right: 2rem;
+		width: 3rem;
+		height: 3rem;
+		border-radius: 50%;
+		background: var(--color-primary);
+		color: var(--color-bg);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-decoration: none;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+		transition: all 0.3s ease;
+		z-index: 1000;
+	}
+
+	.floating-back:hover {
+		background: var(--color-primary-hover);
+		transform: scale(1.1);
+		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+	}
+
+	.icon {
+		font-size: 1.2rem;
 	}
 </style>
