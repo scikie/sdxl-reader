@@ -21,6 +21,7 @@
 	 * - 用户阅读时可随时切换主题
 	 */
 	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
+	import { readingProgressStore } from '$lib/readingProgressStore';
 	import { onMount } from 'svelte';
 
 	/**
@@ -44,6 +45,8 @@
 	 * - 滚动超过 300px 显示悬浮按钮
 	 */
 	onMount(() => {
+		readingProgressStore.setProgress(data.chapter.id, data.chapter.title);
+		
 		const handleScroll = () => {
 			showBackButton = window.scrollY > 300;
 		};

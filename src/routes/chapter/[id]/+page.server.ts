@@ -84,8 +84,8 @@ export const load: PageServerLoad = async ({ params }) => {
 	 * - 用于渲染页面内容
 	 */
 	return {
-		chapter,    // 当前章节内容
-		prevChapter, // 上一章信息（或 null）
-		nextChapter  // 下一章信息（或 null）
+		chapter: { ...chapter, id },
+		prevChapter,
+		nextChapter
 	};
 };

@@ -17,7 +17,7 @@
 - 更简洁的语法，更强大的响应式系统
 -->
 
-<script>
+<script lang="ts">
 	/**
 	 * ============================================================
 	 * 组件脚本部分
@@ -29,6 +29,7 @@
 	 * - 组件可以在其他组件中嵌套使用
 	 */
 	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
+	import { readingProgressStore } from '$lib/readingProgressStore';
 	
 	/**
 	 * 【知识点】Svelte 5 Props 接收
@@ -54,6 +55,18 @@
 	 * - 这里我们使用解构提取 data
 	 */
 	let { data } = $props();
+	
+	let progress = $state<{ chapterId: number; chapterTitle: string } | null>(null);
+	let unsubscribe: (() => void) | null = null;
+	
+	$effect(() => {
+		unsubscribe = readingProgressStore.subscribe((value) => {
+			progress = value;
+		});
+		return () => {
+			if (unsubscribe) unsubscribe();
+		};
+	});
 	
 	/**
 	 * 【知识点】响应式状态 $state()
@@ -132,6 +145,13 @@ HTML 模板部分
 		</div>
 		<h1>神雕侠侣</h1>
 		<p class="author">金庸 著</p>
+		
+		{#if progress}
+			<a href="/chapter/{progress.chapterId}" class="continue-reading">
+				<span class="continue-label">继续阅读</span>
+				<span class="continue-chapter">第{progress.chapterId}回 {progress.chapterTitle}</span>
+			</a>
+		{/if}
 	</header>
 	
 	<!-- 章节列表容器 -->
@@ -382,5 +402,44 @@ HTML 模板部分
 	
 	.chapter-title {
 		margin-left: 1rem;
+	}
+
+	/*
+	============================================================
+	继续阅读按钮样式
+	============================================================
+	
+	【知识点】视觉突出
+	- 使用主色调作为背景
+	- 吸引用户注意，方便快速继续阅读
+	*/
+	.continue-reading {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 1rem;
+		margin: 1.5rem 0;
+		background: var(--color-primary);
+		color: white;
+		border-radius: 8px;
+		text-decoration: none;
+		transition: all 0.2s;
+	}
+
+	.continue-reading:hover {
+		background: var(--color-primary-hover);
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	}
+
+	.continue-label {
+		font-size: 0.85rem;
+		opacity: 0.9;
+		margin-bottom: 0.25rem;
+	}
+
+	.continue-chapter {
+		font-weight: bold;
+		font-size: 1rem;
 	}
 </style>
