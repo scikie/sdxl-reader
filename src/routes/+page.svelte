@@ -149,7 +149,7 @@ HTML 模板部分
 		{#if progress}
 			<a href="/chapter/{progress.chapterId}" class="continue-reading">
 				<span class="continue-label">继续阅读</span>
-				<span class="continue-chapter">第{progress.chapterId}回 {progress.chapterTitle}</span>
+				<span class="continue-chapter">{progress.chapterTitle}</span>
 			</a>
 		{/if}
 	</header>
